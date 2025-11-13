@@ -25,7 +25,8 @@ public class PriorityQueue<E extends Comparable<E>> {
      * @param element the element to be added
      */
     public void add(E element) {
-
+        myHeap.add(element);
+        heapify(0);
     }
 
     /**
@@ -36,17 +37,20 @@ public class PriorityQueue<E extends Comparable<E>> {
      * @param posTwo the second element's position in the queue
      */
     private void swap(int posOne, int posTwo) {
-
+        E first = myHeap.get(posOne);
+        E second = myHeap.get(posTwo);
+        myHeap.set(posOne, second);
+        myHeap.set(posTwo, first);
     }
 
     /**
-     * Returns whether or not the element is in the heap
+     * Returns whether the element is in the heap
      *
      * @param element the element to be searched for
      * @return true if the element is in the queue, false otherwise
      */
     public boolean contains(E element) {
-        return false;
+        return myHeap.contains(element);
     }
 
     /**
@@ -56,7 +60,10 @@ public class PriorityQueue<E extends Comparable<E>> {
      * @return the element of highest priority queue
      */
     public E peek() {
-        return null;
+        if(myHeap.isEmpty()) {
+            return null;
+        }
+        return myHeap.get(0);
     }
 
     /**
@@ -66,8 +73,10 @@ public class PriorityQueue<E extends Comparable<E>> {
      * @return the element of highest priority
      */
     public E poll() {
-        return null;
-    }
+        E val = myHeap.remove(0);
+        heapify(0);
+        return val;
+}
 
     /**
      * Will "sift down" the element at the given position
@@ -76,7 +85,23 @@ public class PriorityQueue<E extends Comparable<E>> {
      * @param pos the starting position for heapify
      */
     private void heapify(int pos) {
+        int firstChild  = (2 * pos) + 1;
+        int secondChild = (2 * pos) + 2;
+        if(firstChild >= myHeap.size()) {
+            return;
+        }
+        int smallestChild = firstChild;
+        if(secondChild < myHeap.size()) {
+            smallestChild =
+                    (myHeap.get(firstChild).compareTo(myHeap.get(secondChild)) <= 0)?
+                            firstChild : secondChild;
+        }
+        if(myHeap.get(smallestChild).compareTo(myHeap.get(pos)) < 0) {
+            swap(pos, smallestChild);
+        }
 
+        heapify(firstChild);
+        heapify(secondChild);
     }
 
     /**
@@ -88,7 +113,12 @@ public class PriorityQueue<E extends Comparable<E>> {
      * @return true if an element was removed from the queue, false otherwise
      */
     public boolean remove(E element) {
-        return false;
+        if(!contains(element)) {
+            return false;
+        }
+        myHeap.remove(element);
+        heapify(0);
+        return true;
     }
 
     /**
@@ -97,7 +127,7 @@ public class PriorityQueue<E extends Comparable<E>> {
      * @return the number of elements in the queue
      */
     public int size() {
-        return -1;
+        return myHeap.size();
     }
 
     /**
@@ -108,19 +138,11 @@ public class PriorityQueue<E extends Comparable<E>> {
      * @return the String representation of the heap
      */
     public String toString() {
-        return "toString";
-    }
-
-
-    /**
-     * Main method - contains console program used
-     * for testing of the PriorityQueue class.
-     *
-     * @param args
-     */
-    public static void main(String[] args) {
-// TODO Auto-generated method stub
-
+        String s = "";
+        for(E element : myHeap) {
+            s += element + " ";
+        }
+        return s;
     }
 
 }
